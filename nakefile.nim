@@ -13,6 +13,13 @@ proc generateEmbeddedWasm*(filename: string, distname: string) =
   let loaderstr = readFile("src/twim-loader.js")
   writeFile(distname, loaderstr.replace("${WASM_BINARY_ARRAY}", binarray.join(",")))
 
+proc install*(package: string) =
+  discard execShellCmd("nimble install" & package)
+
+task "install-depends", "":
+  install "jsbind"
+  install "nimboost"
+
 task "copy-files", "":
   copyFile "manifest.json", "dist/manifest.json"
   copyFile "src/twim-background.js", "dist/twim-background.js"
