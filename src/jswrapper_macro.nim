@@ -79,8 +79,8 @@ proc genArrayGetter*(procdef: NimNode): NimNode {.compileTime.} =
       Tname = procdef[3][1][0]
       ATname = procdef[3][2][0]
       VT = procdef[3][0]
-    let emasmstr = "\"return $0[$1]\""
-    let pstr = fmt"emTypeToNimType(${VT.repr}, EM_ASM_INT(${emasmstr}, toEmPtr(${Tname}), toEmPtr(${ATname})))"
+    let emasmstr = "\"return _nimem_w(_nimem_o[$0][$1]);\""
+    let pstr = fmt"return emTypeToNimType[${VT.repr}](EM_ASM_INT(${emasmstr}, toEmPtr(${Tname}), toEmPtr(${ATname})))" # FIX: genArrayGetter toEmPtr(${ATname})
     procbody.add(parseExpr(pstr))
     result[6] = procbody
 
@@ -98,7 +98,7 @@ proc genArraySetter*(procdef: NimNode): NimNode {.compileTime.} =
       Tname = procdef[3][1][0]
       ATname = procdef[3][2][0]
       VTname = procdef[3][3][0]
-    let emasmstr= "\"$0[$1] = $2\""
+    let emasmstr= "\"_nimem_o[$0][$1] = _nimem_o[$2]\""
     let pstr= fmt"discard EM_ASM_INT(${emasmstr}, toEmPtr(${Tname}), toEmPtr(${ATname}), toEmPtr(${VTname}))"
     procbody.add(parseExpr(pstr))
     result[6] = procbody
