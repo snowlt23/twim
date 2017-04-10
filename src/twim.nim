@@ -42,8 +42,14 @@ proc downloadImage*(elem: Element) =
   xhr.send()
 
 var isEnabled = false
+var prevhref = location.href
 var prevlen = 0
 proc startTwim*() =
+  console.log(location.href)
+  # detect profile heading change
+  if prevhref != location.href:
+    prevlen = 0
+    prevhref = location.href
   let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
   for i in prevlen..<imgelems.len:
     let imgelem = imgelems[i]
@@ -69,4 +75,4 @@ startTwim()
 let observer = newMutationObserver() do ():
   startTwim()
 let observeropt = jsonParse("{\"attributes\": true, \"childList\": true, \"characterData\": true}")
-observer.observe(document.getElementById("stream-items-id"), observeropt)
+observer.observe(document.getElementById("page-container"), observeropt)

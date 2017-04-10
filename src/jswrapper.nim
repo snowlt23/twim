@@ -83,6 +83,7 @@ proc log*(console: Console, obj: JSObj) {.jsimport.}
 proc log*(console: Console, s: jsstring) {.jsimport.}
 
 # # Location
+proc href*(loc: Location): jsstring {.jsimportProp.}
 proc search*(loc: Location): jsstring {.jsimportProp.}
 
 # # Global
