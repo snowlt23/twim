@@ -13,7 +13,7 @@ proc removePostfix*(node: NimNode): NimNode {.compileTime.} =
   else:
     return node
 
-template defineJsGlobal*(name, typ) =
+template defineJSGlobal*(name, typ) =
   when defined(js):
     var name* {.importc, nodecl.}: typ
   elif defined(emscripten):

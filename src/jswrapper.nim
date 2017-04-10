@@ -15,10 +15,10 @@ type
   Location* = ref object of JSObj
   Blob* = ref object of JSObj
 
-defineJsGlobal window, Window
-defineJsGlobal document, Document
-defineJsGlobal console, Console
-defineJsGlobal location, Location
+defineJSGlobal window, Window
+defineJSGlobal document, Document
+defineJSGlobal console, Console
+defineJSGlobal location, Location
 
 # JSArray
 proc newArray*[T](len: int): JSArray[T] {.jsimportgWithName: "new Array".}

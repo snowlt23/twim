@@ -14,7 +14,7 @@ type
   TabID* = ref object of JSObj
   Tabs* = ref object of JSObj
 
-defineJsGlobal chrome, Chrome
+defineJSGlobal chrome, Chrome
 
 # Chrome
 proc extension*(chrome: Chrome): Extension {.jsimportProp.}
