@@ -34,28 +34,25 @@ proc downloadImage*(elem: Element) =
     link.dispatchEvent(event)
   xhr.send()
 
-proc mouseoverCallback*(e: Event) =
-  e.currentTarget.addOverlayFilter()
-proc mouseoutCallback*(e: Event) =
-  e.currentTarget.removeOverlayFilter()
-proc clickCallback*(e: Event) =
-  e.currentTarget.downloadImage()
-
+var isEnabled = false
 proc startTwim*() =
   let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
   for imgelem in imgelems:
-    imgelem.addEventListener("mouseover", mouseoverCallback)
-    imgelem.addEventListener("mouseout", mouseoutCallback)
-    imgelem.addEventListener("click", clickCallback)
-proc endTwim*() =
-  let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
-  for imgelem in imgelems:
-    imgelem.removeEventListener("mouseover", mouseoverCallback, false)
-    imgelem.removeEventListener("mouseout", mouseoutCallback, false)
-    imgelem.removeEventListener("click", clickCallback, false)
+    imgelem.addEventListener("mouseover") do (e: Event):
+      if isEnabled:
+        e.currentTarget.addOverlayFilter()
+    imgelem.addEventListener("mouseout") do (e: Event):
+      if isEnabled:
+        e.currentTarget.removeOverlayFilter()
+    imgelem.addEventListener("click") do (e: Event):
+      if isEnabled:
+        e.currentTarget.downloadImage()
 
 chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, sendResponse: JSObj):
-  if request == "startTwim":
-    startTwim()
-  elif request == "endTwim":
-    endTwim()
+  if request == "enableTwim":
+    isEnabled = true
+  elif request == "disableTwim":
+    isEnabled = false
+
+startTwim()
+
