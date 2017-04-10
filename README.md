@@ -1,7 +1,7 @@
 
 # Twim
 
-Twim is a twitter image downloader.  
+Twim is a twitter image downloader chrome extension.  
 When downloading, prefix account name into image file.
 
 # Build
