@@ -3,6 +3,9 @@
     "manifest_version": 2,
     "name": "Twim",
     "version": "0.1",
+    "icons": {
+        "128": "icon-enable.png"
+    },
     "content_scripts": [{
         "matches": ["https://twitter.com/*"],
         "js": ["twim-loader.js", "twim.js"]
