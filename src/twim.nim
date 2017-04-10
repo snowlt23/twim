@@ -42,14 +42,8 @@ proc downloadImage*(elem: Element) =
   xhr.send()
 
 var isEnabled = false
-var prevhref = location.href
 var prevlen = 0
 proc startTwim*() =
-  console.log(location.href)
-  # detect profile heading change
-  if prevhref != location.href:
-    prevlen = 0
-    prevhref = location.href
   let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
   for i in prevlen..<imgelems.len:
     let imgelem = imgelems[i]
@@ -72,7 +66,15 @@ chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, s
     isEnabled = false
 
 startTwim()
-let observer = newMutationObserver() do ():
+let imgobserver = newMutationObserver() do ():
   startTwim()
-let observeropt = jsonParse("{\"attributes\": true, \"childList\": true, \"characterData\": true}")
-observer.observe(document.getElementById("page-container"), observeropt)
+let imgobserveropt = jsonParse("{\"attributes\": true, \"childList\": true}")
+imgobserver.observe(document.getElementById("stream-items-id"), imgobserveropt)
+
+let pageobserver = newMutationObserver() do ():
+  console.log("changed page!")
+  prevlen = 0
+  startTwim()
+let pageobserveropt = jsonParse("{\"attributes\": true, \"childList\": true}")
+pageobserver.observe(document.getElementById("page-container"), pageobserveropt)
+

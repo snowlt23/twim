@@ -73,6 +73,7 @@ proc currentTarget*(event: Event): Element {.jsimportProp.}
 proc stopPropagation*(event: Event) {.jsimport.}
 
 # Window
+proc addEventListener*(window: Window, eventname: jsstring, callback: proc (e: Event)) {.jsimport.}
 proc URL*(window: Window): URLObj {.jsimportProp.}
 
 # URLObj
