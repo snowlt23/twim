@@ -1,9 +1,7 @@
 
 import jswrapper
 import xmlhttprequest
-
-let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
-console.log(imgelems[0])
+import os
 
 proc addOverlayFilter*(elem: Element) =
   elem.style.backgroundColor = "blue"
@@ -12,6 +10,10 @@ proc addOverlayFilter*(elem: Element) =
 proc removeOverlayFilter*(elem: Element) =
   elem.style.backgroundColor = "none"
   elem.childNodes[1].style.opacity = "1.0"
+
+proc getAccountName*(elem: Element): string =
+  let contentelem = elem.parentNode.parentNode.parentNode.parentNode.parentNode
+  return contentelem.childNodes[1].childNodes[1].childNodes[4].childNodes[1].innerText
 
 proc downloadImage*(elem: Element) =
   let imgsrc = elem.childNodes[1].src
@@ -24,17 +26,30 @@ proc downloadImage*(elem: Element) =
     let file = newBlob(arr, nil)
     let link = document.createElement("a")
     link.href = window.URL.createObjectURL(file)
-    link.setAttribute("download", "test.jpg")
+    link.setAttribute("download", elem.getAccountName() & "_" & imgsrc.splitPath().tail)
     let event = document.createEvent("MouseEvents")
     event.initEvent("click", false, true)
     link.dispatchEvent(event)
   xhr.send()
 
-for imgelem in imgelems:
-  imgelem.addEventListener("mouseover") do (e: Event):
-    console.log(e.currentTarget)
-    e.currentTarget.addOverlayFilter()
-  imgelem.addEventListener("mouseout") do (e: Event):
-    e.currentTarget.removeOverlayFilter()
-  imgelem.addEventListener("click") do (e: Event):
-    e.currentTarget.downloadImage()
+proc mouseoverCallback*(e: Event) =
+  e.currentTarget.addOverlayFilter()
+proc mouseoutCallback*(e: Event) =
+  e.currentTarget.removeOverlayFilter()
+proc clickCallback*(e: Event) =
+  e.currentTarget.downloadImage()
+
+proc startTwim*() =
+  let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
+  for imgelem in imgelems:
+    imgelem.addEventListener("mouseover", mouseoverCallback)
+    imgelem.addEventListener("mouseout", mouseoutCallback)
+    imgelem.addEventListener("click", clickCallback)
+proc endTwim*() =
+  let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
+  for imgelem in imgelems:
+    imgelem.removeEventListener("mouseover", mouseoverCallback, false)
+    imgelem.removeEventListener("mouseout", mouseoutCallback, false)
+    imgelem.removeEventListener("click", clickCallback, false)
+
+startTwim()

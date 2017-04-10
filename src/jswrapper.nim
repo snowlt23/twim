@@ -49,6 +49,7 @@ proc innerText*(elem: Element): jsstring {.jsimportProp.}
 proc childNodes*(elem: Element): JsArray[Element] {.jsimportProp.}
 proc parentNode*(elem: Element): Element {.jsimportProp.}
 proc addEventListener*(elem: Element, eventname: jsstring, callback: proc (e: Event)) {.jsimport.}
+proc removeEventListener*(elem: Element, eventname: jsstring, callback: proc (e: Event), b: bool) {.jsimport.}
 proc dispatchEvent*(elem: Element, event: Event) {.jsimport.}
 proc style*(elem: Element): Style {.jsimportProp.}
 proc setAttribute*(elem: Element, name: jsstring, value: jsstring) {.jsimport.}

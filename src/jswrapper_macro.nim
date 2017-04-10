@@ -64,8 +64,6 @@ macro expandGetterEMASMStr*(AT: typed, VT: typed): untyped =
     result = newStrLitNode(fmt"return _nimem_w(_nimem_o[${arg1}][${arg2}]);")
   else:
     result = newStrLitNode(fmt"return _nimem_o[${arg1}][${arg2}];")
-  echo AT.repr, ", ", VT.repr
-  echo result.repr
 
 macro expandSetterEMASMStr*(AT: typed, VT: typed): untyped =
   let
@@ -73,8 +71,6 @@ macro expandSetterEMASMStr*(AT: typed, VT: typed): untyped =
     arg2 = emasmStrFromType(AT, "$1")
     arg3 = emasmStrFromType(VT, "$2")
   result = newStrLitNode(fmt"_nimem_o[${arg1}][${arg2}] = ${arg3}")
-  echo AT.repr, ", ", VT.repr
-  echo result.repr
 
 proc genArrayGetter*(procdef: NimNode): NimNode {.compileTime.} =
   if procdef[3].len != 3:
@@ -120,4 +116,3 @@ macro jsaccessor*(procdef: untyped): untyped =
     result = genArrayGetter(procdef)
   elif $procdef[0].removePostfix() == "[]=":
     result = genArraySetter(procdef)
-  echo result.repr
