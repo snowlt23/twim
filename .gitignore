@@ -1,0 +1,9 @@
+
+nimcache/
+nimsuggest.log
+
+nakefile.exe
+nakefile
+
+/dist/*
+!dist/empty.txt
