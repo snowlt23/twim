@@ -40,30 +40,41 @@ template emTypeToNimType*[T](v: untyped): T =
     T(v)
 
 proc isJSObj*(T: NimNode): bool {.compileTime.} =
-  echo T.repr
-  if T.len == 0 and T.kind != nnkSym:
-    return false
-  let typeimpl = if T.kind == nnkSym:
-                   T.symbol.getImpl
-                 else:
-                   T[0].symbol.getImpl()
-  if typeimpl.len < 3:
-    return false
-  if typeimpl[2].kind == nnkRefTy and typeimpl[2][0][1].kind == nnkOfInherit and typeimpl[2][0][1][0].repr == "JSObj":
-    return true
+  case getType(T)[1].repr
+  of "cstring":
+    false
+  of "int", "uint", "cint", "int32", "uint32", "uint16", "int16", "bool":
+    false
+  of "float", "float32", "float64", "cfloat", "cdouble":
+    false
   else:
-    return false
+    true
 
-proc procToTemplate*(procdef: NimNode): NimNode {.compileTime.} =
-  result = nnkTemplateDef.newTree(
-    procdef[0],
-    procdef[1],
-    procdef[2],
-    procdef[3],
-    procdef[4],
-    procdef[5],
-    procdef[6],
-  )
+proc emasmStrFromType*(T: NimNode, i: string): string {.compileTime.} =
+  if T.isJSObj:
+    return fmt"_nimem_o[${i}]"
+  else:
+    return i
+
+macro expandGetterEMASMStr*(AT: typed, VT: typed): untyped =
+  let
+    arg1 = "$0"
+    arg2 = emasmStrFromType(AT, "$1")
+  if getType(VT).isJSObj:
+    result = newStrLitNode(fmt"return _nimem_w(_nimem_o[${arg1}][${arg2}]);")
+  else:
+    result = newStrLitNode(fmt"return _nimem_o[${arg1}][${arg2}];")
+  echo AT.repr, ", ", VT.repr
+  echo result.repr
+
+macro expandSetterEMASMStr*(AT: typed, VT: typed): untyped =
+  let
+    arg1 = "$0"
+    arg2 = emasmStrFromType(AT, "$1")
+    arg3 = emasmStrFromType(VT, "$2")
+  result = newStrLitNode(fmt"_nimem_o[${arg1}][${arg2}] = ${arg3}")
+  echo AT.repr, ", ", VT.repr
+  echo result.repr
 
 proc genArrayGetter*(procdef: NimNode): NimNode {.compileTime.} =
   if procdef[3].len != 3:
@@ -78,9 +89,9 @@ proc genArrayGetter*(procdef: NimNode): NimNode {.compileTime.} =
     let
       Tname = procdef[3][1][0]
       ATname = procdef[3][2][0]
+      AT = procdef[3][2][1]
       VT = procdef[3][0]
-    let emasmstr = "\"return _nimem_w(_nimem_o[$0][$1]);\""
-    let pstr = fmt"return emTypeToNimType[${VT.repr}](EM_ASM_INT(${emasmstr}, toEmPtr(${Tname}), toEmPtr(${ATname})))" # FIX: genArrayGetter toEmPtr(${ATname})
+    let pstr = fmt"return emTypeToNimType[${VT.repr}](EM_ASM_INT(expandGetterEMASMStr(${AT.repr}, ${VT.repr}), toEmPtr(${Tname}), toEmPtr(${ATname})))" # FIX: genArrayGetter toEmPtr(${ATname})
     procbody.add(parseExpr(pstr))
     result[6] = procbody
 
@@ -97,9 +108,10 @@ proc genArraySetter*(procdef: NimNode): NimNode {.compileTime.} =
     let
       Tname = procdef[3][1][0]
       ATname = procdef[3][2][0]
+      AT = procdef[3][2][1]
       VTname = procdef[3][3][0]
-    let emasmstr= "\"_nimem_o[$0][$1] = _nimem_o[$2]\""
-    let pstr= fmt"discard EM_ASM_INT(${emasmstr}, toEmPtr(${Tname}), toEmPtr(${ATname}), toEmPtr(${VTname}))"
+      VT = procdef[3][3][1]
+    let pstr= fmt"discard EM_ASM_INT(expandSetterEMASMStr(${AT.repr}, ${VT.repr}), toEmPtr(${Tname}), toEmPtr(${ATname}), toEmPtr(${VTname}))"
     procbody.add(parseExpr(pstr))
     result[6] = procbody
 
