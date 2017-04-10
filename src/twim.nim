@@ -1,6 +1,8 @@
 
+import jsbind
 import jswrapper
 import xmlhttprequest
+import chromewrapper
 import os
 
 proc addOverlayFilter*(elem: Element) =
@@ -52,4 +54,13 @@ proc endTwim*() =
     imgelem.removeEventListener("mouseout", mouseoutCallback, false)
     imgelem.removeEventListener("click", clickCallback, false)
 
-startTwim()
+var switchFlag = false
+chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, sendResponse: JSObj):
+  if request == "switchTwim":
+    if not switchFlag:
+      startTwim()
+      switchFlag = true
+    else:
+      endTwim()
+      switchFlag = false
+

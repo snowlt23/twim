@@ -15,10 +15,10 @@ type
   Location* = ref object of JSObj
   Blob* = ref object of JSObj
 
-when defined(js):
-  type jsstring* = cstring
-elif defined(emscripten):
-  type jsstring* = string
+# when defined(js):
+#   type jsstring* = cstring
+# elif defined(emscripten):
+#   type jsstring* = string
 
 defineJsGlobal window, Window
 defineJsGlobal document, Document
@@ -90,6 +90,7 @@ proc log*(console: Console, s: jsstring) {.jsimport.}
 # # Global
 # proc jsalert*(s: jsstring) {.jsimportg.}
 # proc decodeURIComponent*(s: jsstring): jsstring {.jsimportg.}
+proc jsonParse*(s: string): JSObj {.jsimportgWithName: "JSON.parse".}
 
 # Blob
 proc newBlob*(data: JSObj, opt: JSObj): Blob {.jsimportgWithName: "new Blob".}
