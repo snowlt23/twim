@@ -73,6 +73,7 @@ proc `[]=`*(style: Style, key: jsstring, value: jsstring) {.jsaccessor.} # FIXME
 # Event
 proc initEvent*(event: Event, t: jsstring, b1, b2: bool) {.jsimport.}
 proc currentTarget*(event: Event): Element {.jsimportProp.}
+proc stopPropagation*(event: Event) {.jsimport.}
 
 # Window
 proc URL*(window: Window): URLObj {.jsimportProp.}

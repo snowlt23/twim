@@ -47,6 +47,7 @@ proc startTwim*() =
     imgelem.addEventListener("click") do (e: Event):
       if isEnabled:
         e.currentTarget.downloadImage()
+        e.stopPropagation()
 
 chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, sendResponse: JSObj):
   if request == "enableTwim":
