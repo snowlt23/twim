@@ -43,7 +43,7 @@ proc downloadImage*(elem: Element) =
 
 var isEnabled = false
 var prevlen = 0
-proc startTwim*() =
+proc registerTwimEvent*() =
   let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
   for i in prevlen..<imgelems.len:
     let imgelem = imgelems[i]
@@ -59,6 +59,13 @@ proc startTwim*() =
         e.stopPropagation()
   prevlen = imgelems.len
 
+proc startTwim*() =
+  registerTwimEvent()
+  let imgobserver = newMutationObserver() do ():
+    registerTwimEvent()
+  let imgobserveropt = jsonParse("{\"attributes\": true, \"childList\": true}")
+  imgobserver.observe(document.getElementById("stream-items-id"), imgobserveropt)
+
 chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, sendResponse: JSObj):
   if request == "enableTwim":
     isEnabled = true
@@ -66,10 +73,6 @@ chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, s
     isEnabled = false
 
 startTwim()
-let imgobserver = newMutationObserver() do ():
-  startTwim()
-let imgobserveropt = jsonParse("{\"attributes\": true, \"childList\": true}")
-imgobserver.observe(document.getElementById("stream-items-id"), imgobserveropt)
 
 let pageobserver = newMutationObserver() do ():
   console.log("changed page!")
