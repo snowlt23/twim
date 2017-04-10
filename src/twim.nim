@@ -54,13 +54,8 @@ proc endTwim*() =
     imgelem.removeEventListener("mouseout", mouseoutCallback, false)
     imgelem.removeEventListener("click", clickCallback, false)
 
-var switchFlag = false
 chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, sendResponse: JSObj):
-  if request == "switchTwim":
-    if not switchFlag:
-      startTwim()
-      switchFlag = true
-    else:
-      endTwim()
-      switchFlag = false
-
+  if request == "startTwim":
+    startTwim()
+  elif request == "endTwim":
+    endTwim()

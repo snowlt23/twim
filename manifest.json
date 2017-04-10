@@ -7,7 +7,9 @@
         "matches": ["https://twitter.com/*"],
         "js": ["twim-loader.js", "twim.js"]
     }],
-    "browser_action": {},
+    "browser_action": {
+        "default_icon": "icon-disable.png"
+    },
     "background": {
         "scripts": ["twim-background.js"]
     },

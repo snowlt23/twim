@@ -7,3 +7,9 @@ nakefile
 
 /dist/*
 !dist/empty.txt
+
+/icon/icon.kra~
+/icon/icon-disable.png
+/icon/icon-disable.png~
+/icon/icon-enable.png
+/icon/icon-enable.png~

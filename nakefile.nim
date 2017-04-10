@@ -16,6 +16,8 @@ proc generateEmbeddedWasm*(filename: string, distname: string) =
 task "copy-files", "":
   copyFile "manifest.json", "dist/manifest.json"
   copyFile "src/twim-background.js", "dist/twim-background.js"
+  copyFile "icon/icon-enable.png", "dist/icon-enable.png"
+  copyFile "icon/icon-disable.png", "dist/icon-disable.png"
 
 task "generate-loader", "":
   generateEmbeddedWasm("dist/twim.wasm", "dist/twim-loader.js")
