@@ -2,6 +2,7 @@
 import jsbind
 import jswrapper
 import xmlhttprequest
+import mutationobserver
 import chromewrapper
 import os
 
@@ -14,7 +15,13 @@ proc removeOverlayFilter*(elem: Element) =
   elem.childNodes[1].style.opacity = "1.0"
 
 proc getAccountName*(elem: Element): string =
-  let contentelem = elem.parentNode.parentNode.parentNode.parentNode.parentNode
+  let contentelem = case elem.parentNode.className
+                    of "AdaptiveMedia-threeQuartersWidthPhoto", "AdaptiveMedia-twoThirdsWidthPhoto", "AdaptiveMedia-halfWidthPhoto":
+                      elem.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode
+                    of "AdaptiveMedia-thirdHeightPhoto", "AdaptiveMedia-halfHeightPhoto":
+                      elem.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode
+                    else:
+                      elem.parentNode.parentNode.parentNode.parentNode.parentNode
   return contentelem.childNodes[1].childNodes[1].childNodes[4].childNodes[1].innerText
 
 proc downloadImage*(elem: Element) =
@@ -35,9 +42,11 @@ proc downloadImage*(elem: Element) =
   xhr.send()
 
 var isEnabled = false
+var prevlen = 0
 proc startTwim*() =
   let imgelems = document.getElementsByClassName("js-adaptive-photo").toSeq()
-  for imgelem in imgelems:
+  for i in prevlen..<imgelems.len:
+    let imgelem = imgelems[i]
     imgelem.addEventListener("mouseover") do (e: Event):
       if isEnabled:
         e.currentTarget.addOverlayFilter()
@@ -48,6 +57,7 @@ proc startTwim*() =
       if isEnabled:
         e.currentTarget.downloadImage()
         e.stopPropagation()
+  prevlen = imgelems.len
 
 chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, sendResponse: JSObj):
   if request == "enableTwim":
@@ -56,4 +66,7 @@ chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, s
     isEnabled = false
 
 startTwim()
-
+let observer = newMutationObserver() do ():
+  startTwim()
+let observeropt = jsonParse("{\"attributes\": true, \"childList\": true, \"characterData\": true}")
+observer.observe(document.getElementById("stream-items-id"), observeropt)
