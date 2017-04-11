@@ -26,10 +26,15 @@ task "copy-files", "":
   copyFile "icon/icon-enable.png", "dist/icon-enable.png"
   copyFile "icon/icon-disable.png", "dist/icon-disable.png"
 
-task "generate-loader", "":
+task "generate-loader", "embed wasm to loader":
   generateEmbeddedWasm("dist/twim.wasm", "dist/twim-loader.js")
 
 task "build", "build wasm":
   runTask "copy-files"
   discard execShellCmd "nim c -o:dist/twim.js src/twim.nim"
   runTask "generate-loader"
+
+task "package", "packaging extension for publish":
+  runTask "build"
+  discard execShellCmd "zip -r -j Twim.zip dist"
+

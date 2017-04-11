@@ -8,6 +8,12 @@ nakefile
 /dist/*
 !dist/empty.txt
 
-/icon/icon.kra~
-/icon/icon-disable.png~
-/icon/icon-enable.png~
+/images/icon.kra~
+/images/icon-disable.png~
+/images/icon-enable.png~
+/images/tile.kra~
+/images/tile.png~
+/images/marquee.kra~
+/images/marquee.png~
+
+/Twim.zip
