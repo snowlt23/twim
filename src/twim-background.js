@@ -10,6 +10,19 @@ function disableTwim(tab) {
     chrome.browserAction.setIcon({path: "icon-disable.png"});
 }
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    let savedirectory = localStorage.getItem("save-directory")
+    if( savedirectory !== "") {
+        savedirectory += "/"
+    }
+    if (request.type == "download") {
+        chrome.downloads.download({
+            "url": request.url,
+            "filename": savedirectory + request.filename
+        });
+    }
+});
+
 chrome.browserAction.onClicked.addListener((tab) => {
     if (!switchFlag) {
         enableTwim(tab);

@@ -3,6 +3,7 @@ import jswrapper.basics
 import jswrapper.xmlhttprequest
 import jswrapper.mutationobserver
 import jswrapper.chromes
+import strutils, boost.richstring
 import os
 
 proc addOverlayFilter*(elem: Element) =
@@ -25,20 +26,12 @@ proc getAccountName*(elem: Element): string =
 
 proc downloadImage*(elem: Element) =
   let imgsrc = elem.childNodes[1].src
-  let xhr = newXMLHTTPRequest()
-  xhr.open("GET", imgsrc, true)
-  xhr.responseType = "blob"
-  xhr.addEventListener("load") do ():
-    let arr = newArray[JSObj](1)
-    arr[0] = xhr.response
-    let file = newBlob(arr, nil)
-    let link = document.createElement("a")
-    link.href = window.URL.createObjectURL(file)
-    link.setAttribute("download", elem.getAccountName() & "_" & imgsrc.splitPath().tail)
-    let event = document.createEvent("MouseEvents")
-    event.initEvent("click", false, true)
-    link.dispatchEvent(event)
-  xhr.send()
+  let filename = elem.getAccountName() & "_" & imgsrc.splitPath().tail
+  chrome.runtime.sendMessage(jsonobj({
+    "type": "download",
+    "url": imgsrc, 
+    "filename": filename,
+  }))
 
 var isEnabled = false
 var prevlen = 0

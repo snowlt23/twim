@@ -8,8 +8,6 @@ let importBootstrap = """
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 """
 
-let directory = "webkitdirectory directory"
-
 proc genOptionPage*(): string =
   html(lang="ja"):
     head:
@@ -18,17 +16,14 @@ proc genOptionPage*(): string =
     body:
       d(class="panel panel-default", style="margin: 20px"):
         d(class="panel-heading"):
-          h1: "Twim"
+          h1: "Twim Settings"
         d(class="panel-body"):
-          "save directory:"
-          label(`for`="save-directory", class="btn btn-primary btn-sm"):
-            "Select Folder"
-            input(id="save-directory", `type`="file", attr=directory, style="display: none")
-            d(id="save-directory-text")
+          h3: "Save Directory:"
+          d(class="input-group"):
+            span(class="input-group-addon"): "~/Downloads/"
+            input(id="save-directory", class="form-control", `type`="text")
           br
-          label(`for`="save", class="btn btn-success"):
-            "Save Settings"
-            input(id="save", `type`="button", value="Save Settings", style="display: none")
+          input(id="save-settings", `type`="button", class="btn btn-success", value="Save Settings")
       script(src="twim-options.js")
 
 writeFile("dist/twim-options.html", genOptionPage())

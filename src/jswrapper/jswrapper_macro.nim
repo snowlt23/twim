@@ -19,6 +19,9 @@ template defineJSGlobal*(name, typ) =
   elif defined(emscripten):
     var name* = globalEmbindObject(typ, astToStr(name))
 
+proc jscast*[T](obj: JSObj): T =
+  return cast[T](obj)
+
 when defined(emscripten):
   proc finalizeEmbindObject*(o: JSObj) =
     discard EM_ASM_INT("delete _nimem_o[$0]", o.p)
