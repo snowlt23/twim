@@ -4,6 +4,7 @@ export jsstring
 export JSObj
 
 import jsdecl_macros
+export jscast
 
 import json
 export json

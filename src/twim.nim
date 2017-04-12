@@ -29,7 +29,7 @@ proc downloadImage*(elem: Element) =
   let imgsrc = elem.childNodes[1].src
   let filename = elem.getAccountName() & "_" & imgsrc.splitPath().tail
   chrome.runtime.sendMessage(%* {
-    "type": "download",
+    "messagetype": "download",
     "url": imgsrc, 
     "filename": filename,
   })

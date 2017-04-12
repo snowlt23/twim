@@ -38,6 +38,7 @@ proc onMessage*(ex: Extension): OnMessage {.jsimportProp.}
 
 # BrowserAction
 proc onClicked*(ba: BrowserAction): OnClicked {.jsimportProp.}
+proc setIcon*(ba: BrowserAction, opt: JSObj) {.jsimport.}
 
 # PageAction
 
@@ -60,3 +61,4 @@ proc id*(tab: Tab): TabID {.jsimportProp.}
 # Tabs
 proc executeScript*(tabs: Tabs, tabid: TabID, opt: JSObj, callback: proc ()) {.jsimport.}
 proc sendMessage*(tabs: Tabs, tabid: TabID, msg: JSObj) {.jsimport.}
+proc sendMessage*(tabs: Tabs, tabid: TabID, msg: jsstring) {.jsimport.}
