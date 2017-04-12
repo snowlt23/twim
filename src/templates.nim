@@ -217,6 +217,7 @@ const br* = "<br>"
 defineTag(html, "lang")
 defineTag(head, "")
 defineTag(title, "")
+defineTag(meta, "charset")
 defineTag(body, "")
 defineTag(d, defaultAttr, tagname="div")
 defineTag(span, defaultAttr)

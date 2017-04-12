@@ -11,6 +11,7 @@ let importBootstrap = """
 proc genOptionPage*(): string =
   html(lang="ja"):
     head:
+      meta(charset="UTF-8")
       title: "Twim Settings"
       importBootstrap
     body:
@@ -24,6 +25,7 @@ proc genOptionPage*(): string =
             input(id="save-directory", class="form-control", `type`="text")
           br
           input(id="save-settings", `type`="button", class="btn btn-success", value="Save Settings")
+          span(id="save-status", style="margin: 5px;")
       script(src="twim-options.js")
 
 writeFile("dist/twim-options.html", genOptionPage())

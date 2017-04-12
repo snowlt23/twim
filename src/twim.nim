@@ -1,8 +1,9 @@
 
-import jswrapper.basics
-import jswrapper.xmlhttprequest
-import jswrapper.mutationobserver
-import jswrapper.chromes
+import jsdecl.basics
+import jsdecl.xmlhttprequest
+import jsdecl.mutationobserver
+import jsdecl.chromes
+
 import strutils, boost.richstring
 import os
 
@@ -27,11 +28,11 @@ proc getAccountName*(elem: Element): string =
 proc downloadImage*(elem: Element) =
   let imgsrc = elem.childNodes[1].src
   let filename = elem.getAccountName() & "_" & imgsrc.splitPath().tail
-  chrome.runtime.sendMessage(jsonobj({
+  chrome.runtime.sendMessage(%* {
     "type": "download",
     "url": imgsrc, 
     "filename": filename,
-  }))
+  })
 
 var isEnabled = false
 var prevlen = 0
@@ -58,18 +59,18 @@ proc startTwim*() =
   let imgobserveropt = jsonParse("{\"attributes\": true, \"childList\": true}")
   imgobserver.observe(document.getElementById("stream-items-id"), imgobserveropt)
 
-chrome.extension.onMessage.addListener() do (request: jsstring, sender: JSObj, sendResponse: JSObj):
-  if request == "enableTwim":
+# message from background page
+chrome.extension.onMessage.addListener() do (request: JSObj, sender: JSObj, sendResponse: JSObj):
+  if $request == "enableTwim":
     isEnabled = true
-  elif request == "disableTwim":
+  elif $request == "disableTwim":
     isEnabled = false
 
 startTwim()
 
+# detect chaged of profile header
 let pageobserver = newMutationObserver() do ():
-  console.log("changed page!")
   prevlen = 0
   startTwim()
 let pageobserveropt = jsonParse("{\"attributes\": true, \"childList\": true}")
 pageobserver.observe(document.getElementById("page-container"), pageobserveropt)
-

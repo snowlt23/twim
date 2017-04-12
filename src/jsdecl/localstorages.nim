@@ -1,7 +1,7 @@
 
 import jsbind
-import ../jswrapper/basics
-import jswrapper_macro
+import ../jsdecl/basics
+import jsdecl_macros
 
 type
   LocalStorage* = ref object of RootObj

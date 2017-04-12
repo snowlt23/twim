@@ -1,9 +1,7 @@
 
 import jsbind
-import ../jswrapper/basics
-import jswrapper_macro
-import json
-export json
+import ../jsdecl/basics
+import jsdecl_macros
 
 type
   Chrome* = ref object of JSObj
@@ -53,7 +51,7 @@ proc sendMessage*(runtime: Runtime, msg: JSObj, callback: proc () = proc () = di
 proc onMessage*(runtime: Runtime): OnMessage {.jsimportProp.}
 
 # OnMessage
-proc addListener*(om: OnMessage, callback: proc (request: jsstring, sender: JSObj ,sendResponse: JSObj)) {.jsimport.}
+proc addListener*(om: OnMessage, callback: proc (request: JSObj, sender: JSObj ,sendResponse: JSObj)) {.jsimport.}
 # OnClicked
 proc addListener*(oc: OnClicked, callback: proc (tab: Tab)) {.jsimport.}
 
@@ -61,6 +59,4 @@ proc addListener*(oc: OnClicked, callback: proc (tab: Tab)) {.jsimport.}
 proc id*(tab: Tab): TabID {.jsimportProp.}
 # Tabs
 proc executeScript*(tabs: Tabs, tabid: TabID, opt: JSObj, callback: proc ()) {.jsimport.}
-proc sendMessage*(tabs: Tabs, tabid: TabID, msg: jsstring) {.jsimport.}
-
-template jsonobj*(obj: untyped): JSObj = jsonParse($(%* obj))
+proc sendMessage*(tabs: Tabs, tabid: TabID, msg: JSObj) {.jsimport.}

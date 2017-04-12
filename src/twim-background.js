@@ -11,9 +11,12 @@ function disableTwim(tab) {
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    let savedirectory = localStorage.getItem("save-directory")
-    if( savedirectory !== "") {
-        savedirectory += "/"
+    let savedirectory = localStorage.getItem("save-directory");
+    if (savedirectory === null) {
+        savedirectory = "";
+    }
+    if (savedirectory !== "") {
+        savedirectory += "/";
     }
     if (request.type == "download") {
         chrome.downloads.download({

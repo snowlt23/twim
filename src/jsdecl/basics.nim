@@ -1,8 +1,14 @@
 ﻿
 import jsbind
-import jswrapper_macro
 export jsstring
 export JSObj
+
+import jsdecl_macros
+
+import json
+export json
+
+import strutils
 
 type
   JSArray*[T] = ref object of JSObj
@@ -62,6 +68,7 @@ defineElementAttr innerHTML, jsstring
 template defineStyleAttr*(name) =
   proc name*(style: Style): jsstring {.jsimportProp.}
   proc `name=`*(style: Style, value: jsstring) {.jsimportProp.}
+defineStyleAttr color
 defineStyleAttr backgroundColor
 defineStyleAttr opacity
 defineStyleAttr display
@@ -85,14 +92,24 @@ proc createObjectURL*(url: URLObj, blob: Blob): jsstring {.jsimport.}
 proc log*(console: Console, obj: JSObj) {.jsimport.}
 proc log*(console: Console, s: jsstring) {.jsimport.}
 
-# # Location
+# Location
 proc href*(loc: Location): jsstring {.jsimportProp.}
 proc search*(loc: Location): jsstring {.jsimportProp.}
 
-# # Global
-proc jsalert*(s: jsstring) {.jsimportg.}
+# Global
+proc jsalert*(s: jsstring) {.jsimportgWithName: "alert".}
 proc decodeURIComponent*(s: jsstring): jsstring {.jsimportg.}
-proc jsonParse*(s: string): JSObj {.jsimportgWithName: "JSON.parse".}
+proc jsonParse*(s: jsstring): JSObj {.jsimportgWithName: "JSON.parse".}
+proc jsonStringify*(obj: JSObj): jsstring {.jsimportgWithName: "JSON.stringify".}
+proc setTimeout*(callback: proc (), ms: int) {.jsimportg.}
+proc setTimeout*(ms: int, callback: proc ()) =
+  setTimeout(callback, ms)
 
 # Blob
 proc newBlob*(data: JSObj, opt: JSObj): Blob {.jsimportgWithName: "new Blob".}
+
+# json
+converter toString*(jsstr: jsstring): string = $jsstr
+converter toJSObj*(node: JsonNode): JSObj = jsonParse($node)
+converter toJsonNode*(obj: JSObj): JsonNode = parseJson(jsonStringify(obj))
+proc `$`*(obj: JSObj): string = ($toJsonNode(obj)).replace("\"")
