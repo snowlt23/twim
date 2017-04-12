@@ -18,5 +18,6 @@
         "scripts": ["twim-background.js"]
     },
     "permissions": ["tabs", "background", "downloads", "https://twitter.com/*"],
-    "options_page": "twim-options.html"
+    "options_page": "twim-options.html",
+    "web_accessible_resources": ["icon-enable.png"]
 }

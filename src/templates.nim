@@ -232,6 +232,7 @@ defineTag(input, defaultAttr.mergeAttr("type value"))
 defineTag(label, defaultAttr.mergeAttr("for"))
 defineTag(link, defaultAttr.mergeAttr("rel type href"))
 defineTag(script, defaultAttr.mergeAttr("type src"))
+defineTag(img, defaultAttr.mergeAttr("src width height"))
 
 when isMainModule:
   proc gen(): string =

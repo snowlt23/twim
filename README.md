@@ -15,5 +15,6 @@ When downloading, prefix account name into image file.
 ```sh
 $ nimble install nake
 $ nake install-depends
+$ nake download-depends
 $ nake build
 ```

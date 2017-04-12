@@ -3,6 +3,7 @@ import nake
 import os
 import strutils
 import sequtils
+import httpclient
 
 proc generateEmbeddedWasm*(filename: string, distname: string) =
   let wasmstr = readFile(filename)
@@ -19,6 +20,16 @@ proc install*(package: string) =
 task "install-depends", "":
   install "jsbind"
   install "nimboost"
+
+proc downloadSrc*(url: string) =
+  var client = newHttpClient()
+  writeFile("dist" / url.splitPath().tail, client.getContent(url))
+
+task "download-depends", "":
+  downloadSrc "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+  downloadSrc "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  downloadSrc "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+  downloadSrc "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
 
 task "copy-files", "":
   copyFile "manifest.json", "dist/manifest.json"
