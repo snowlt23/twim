@@ -18,7 +18,11 @@ proc disableTwim*(tab: Tab) =
 chrome.runtime.onMessage.addListener() do (request, sender, sendResponse: JSObj):
   let msg = jscast[DownloadMessage](request)
   if $msg.messagetype == "download":
-    var savedirectory = $localStorage.getStringItem("save-directory")
+    let savedirectoryjs = localStorage.getStringItem("save-directory")
+    var savedirectory = if savedirectoryjs != nil:
+                           $savedirectoryjs
+                         else:
+                           ""
     if savedirectory == nil:
       savedirectory = ""
     if savedirectory != "":
