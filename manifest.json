@@ -17,5 +17,6 @@
     "background": {
         "scripts": ["twim-background.js"]
     },
-    "permissions": ["tabs", "background", "https://twitter.com/*"]
+    "permissions": ["tabs", "background", "https://twitter.com/*"],
+    "options_page": "twim-options.html"
 }

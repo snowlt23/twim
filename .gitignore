@@ -5,6 +5,9 @@ nimsuggest.log
 nakefile.exe
 nakefile
 
+/src/twim_options_html.exe
+/src/twim_options_html
+
 /dist/*
 !dist/empty.txt
 

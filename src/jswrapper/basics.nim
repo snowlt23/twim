@@ -1,6 +1,7 @@
 ﻿
 import jsbind
 import jswrapper_macro
+export jsstring
 export JSObj
 
 type
@@ -39,8 +40,6 @@ proc createEvent*(document: Document, name: jsstring): Event {.jsimport.}
 
 # Element
 proc removeChild*(elem: Element, child: Element) {.jsimport.}
-proc innerHTML*(elem: Element): jsstring {.jsimportProp.}
-proc innerText*(elem: Element): jsstring {.jsimportProp.}
 proc childNodes*(elem: Element): JsArray[Element] {.jsimportProp.}
 proc parentNode*(elem: Element): Element {.jsimportProp.}
 proc className*(elem: Element): jsstring {.jsimportProp.}
@@ -55,6 +54,9 @@ template defineElementAttr*(name, V) =
   proc `name=`*(elem: Element, value: V) {.jsimportProp.}
 defineElementAttr src, jsstring
 defineElementAttr href, jsstring
+defineElementAttr value, jsstring
+defineElementAttr innerText, jsstring
+defineElementAttr innerHTML, jsstring
 
 # Style
 template defineStyleAttr*(name) =

@@ -1,9 +1,8 @@
 
-import jsbind
-import jswrapper
-import xmlhttprequest
-import mutationobserver
-import chromewrapper
+import jswrapper.basics
+import jswrapper.xmlhttprequest
+import jswrapper.mutationobserver
+import jswrapper.chromes
 import os
 
 proc addOverlayFilter*(elem: Element) =

@@ -1,6 +1,6 @@
 
 import jsbind
-import jswrapper
+import ../jswrapper/basics
 import jswrapper_macro
 
 type

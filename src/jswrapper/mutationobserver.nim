@@ -1,6 +1,6 @@
 
 import jsbind
-import jswrapper
+import ../jswrapper/basics
 
 type
   MutationObserver* = ref object of JSObj
