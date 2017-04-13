@@ -2,7 +2,7 @@
 {
     "manifest_version": 2,
     "name": "Twim",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "a twitter image downloader chrome extension",
     "icons": {
         "128": "icon-enable.png"
