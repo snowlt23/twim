@@ -37,7 +37,9 @@ chrome.runtime.onMessage.addListener() do (request, sender, sendResponse: JSObj)
       savedirectory = ""
     if savedirectory != "":
       savedirectory  &= "/"
-    chrome.downloads.download(jsonParse(fmt"""{"url": "${msg.url}", "filename": "${savedirectory & msg.filename}"}"""))
+    chrome.downloads.download(jsonParse(fmt"""{"url": "${msg.url}", "filename": "${savedirectory & msg.filename}"}""")) do ():
+      if chrome.runtime.lastError != nil:
+        jsalert("画像がダウンロードできませんでした\nファイルの保存先が不正です")
 
 chrome.browserAction.onClicked.addListener() do (tab: Tab):
   if not switchFlag:

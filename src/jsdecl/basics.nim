@@ -114,3 +114,11 @@ converter toString*(jsstr: jsstring): string = $jsstr
 converter toJSObj*(node: JsonNode): JSObj = jsonParse($node)
 converter toJsonNode*(obj: JSObj): JsonNode = parseJson(jsonStringify(obj))
 proc `$`*(obj: JSObj): string = ($toJsonNode(obj)).replace("\"")
+
+when defined(js):
+  template trycatch*(t: untyped, c: untyped): untyped =
+    {.emit: "try {".}
+    t
+    {.emit: "} catch (e) {"}
+    c
+    {.emit: "}"}

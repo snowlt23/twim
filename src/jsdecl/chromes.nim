@@ -47,11 +47,12 @@ proc setIcon*(ba: BrowserAction, opt: JSObj) {.jsimport.}
 # Storage
 
 # Downloads
-proc download*(downloads: Downloads, opt: JSObj) {.jsimport.}
+proc download*(downloads: Downloads, opt: JSObj, callback: proc () = nil) {.jsimport.}
 
 # Runtime
 proc sendMessage*(runtime: Runtime, msg: JSObj, callback: proc () = proc () = discard) {.jsimport.}
 proc onMessage*(runtime: Runtime): OnMessage {.jsimportProp.}
+proc lastError*(runtime: Runtime): JSObj {.jsimportProp.}
 
 # OnMessage
 proc addListener*(om: OnMessage, callback: proc (request: JSObj, sender: JSObj ,sendResponse: JSObj)) {.jsimport.}
