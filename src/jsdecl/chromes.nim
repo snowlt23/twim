@@ -35,6 +35,8 @@ proc runtime*(chrome: Chrome): Runtime {.jsimportProp.}
 
 # Extension
 proc onMessage*(ex: Extension): OnMessage {.jsimportProp.}
+proc sendMessage*(ex: Extension, tabid: TabID, msg: JSObj, callback: proc (response: JSObj) = nil) {.jsimport.}
+proc sendMessage*(ex: Extension, tabid: TabID, msg: jsstring, callback: proc (response: JSObj) = nil) {.jsimport.}
 
 # BrowserAction
 proc onClicked*(ba: BrowserAction): OnClicked {.jsimportProp.}
@@ -59,6 +61,7 @@ proc addListener*(oc: OnClicked, callback: proc (tab: Tab)) {.jsimport.}
 # Tab
 proc id*(tab: Tab): TabID {.jsimportProp.}
 # Tabs
+proc query*(tabs: Tabs, queryinfo: JSObj, callback: proc (tabs: JSArray[Tab])) {.jsimport.}
 proc executeScript*(tabs: Tabs, tabid: TabID, opt: JSObj, callback: proc ()) {.jsimport.}
 proc sendMessage*(tabs: Tabs, tabid: TabID, msg: JSObj) {.jsimport.}
 proc sendMessage*(tabs: Tabs, tabid: TabID, msg: jsstring) {.jsimport.}

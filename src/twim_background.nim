@@ -8,11 +8,21 @@ import twim_types
 
 var switchFlag = false
 
+proc queryTwitterTabs*(callback: proc (tabs: seq[Tab])) =
+  chrome.tabs.query(jsonParse("""{"url": "https://twitter.com/*"}""")) do (tabs: JSArray[Tab]):
+    callback(tabs.toSeq())
+
 proc enableTwim*(tab: Tab) =
-  chrome.tabs.sendMessage(tab.id, "enableTwim")
+  queryTwitterTabs() do (tabs: seq[Tab]):
+    for tab in tabs:
+      chrome.tabs.sendMessage(tab.id, "enableTwim")
+  # chrome.tabs.sendMessage(tab.id, "enableTwim")
   chrome.browserAction.setIcon(jsonParse("""{"path": "icon-enable.png"}"""))
 proc disableTwim*(tab: Tab) =
-  chrome.tabs.sendMessage(tab.id, "disableTwim")
+  queryTwitterTabs() do (tabs: seq[Tab]):
+    for tab in tabs:
+      chrome.tabs.sendMessage(tab.id, "disableTwim")
+  # chrome.tabs.sendMessage(tab.id, "disableTwim")
   chrome.browserAction.setIcon(jsonParse("""{"path": "icon-disable.png"}"""))
 
 chrome.runtime.onMessage.addListener() do (request, sender, sendResponse: JSObj):
