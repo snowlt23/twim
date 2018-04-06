@@ -11,3 +11,6 @@ cp manifest.json dist/manifest.json
 
 cp images/icon-enable.png dist/icon-enable.png
 cp images/icon-disable.png dist/icon-disable.png
+
+cd dist
+7z a -tzip ../twim.zip *
