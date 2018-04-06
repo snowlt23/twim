@@ -78,3 +78,9 @@ fn process_request(req JSObj, sender JSObj, resp JSObj) {
 }
 
 chrome_extension_message_listener(process_request)
+
+pageobserver := new_mutation_observer(register_twim_event)
+observe(pageobserver, get_element_by_id("page-container"), jsobj {
+    "childList": true
+    "subtree": true
+  })

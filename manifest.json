@@ -19,5 +19,6 @@
         "persistent": false
     },
     "permissions": ["tabs", "background", "downloads", "https://twitter.com/*"],
+    "options_page": "twim_options.html",
     "web_accessible_resources": ["icon-enable.png"]
 }

@@ -1,0 +1,21 @@
+
+import "core"
+import "jscore"
+import "chrome_ext"
+
+savedirectoryelem := get_element_by_id("save-directory")
+savesettingselem := get_element_by_id("save-settings")
+savestatuselem := get_element_by_id("save-status")
+
+fn reset_menu_status() {
+  inner_text(savestatuselem) = ""
+}
+
+fn save_settings(e Event) {
+  localstorage_set_item("twim_save_directory", savedirectoryelem.value)
+  inner_text(savestatuselem) = "saved!"
+  set_timeout(reset_menu_status, 5000)
+}
+
+savedirectoryelem.value = localstorage_get_item[CString]("twim_save_directory")
+add_event_listener(savesettingselem, "click", save_settings)

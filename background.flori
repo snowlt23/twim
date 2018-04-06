@@ -18,11 +18,17 @@ fn action_callback(tab ChromeTab) {
 
 fn process_request(req JSObj, sender JSObj, resp JSObj) {
   if (get[CString](req, "type") == "twim_download") {
+    savedir := localstorage_get_item[CString]("twim_save_directory")
+    if (is_nil(savedir)) {
+      savedir = ""
+    } else {
+      savedir = to_cs(string(savedir) & s"/")
+    }
     url := get[CString](req, "url")
     filename := get[CString](req, "filename")
     chrome_download(jsobj {
         "url": url
-        "filename": filename
+        "filename": string(savedir) & string(filename)
       })
   }
 }
