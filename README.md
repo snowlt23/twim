@@ -8,7 +8,8 @@ When downloading, prefix account name into image file.
 
 **requirements**
 - Flori compiler
+- 7zip
 
 ```sh
-$ sh build.sh
+$ sh package.sh
 ```
