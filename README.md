@@ -7,14 +7,8 @@ When downloading, prefix account name into image file.
 # Build
 
 **requirements**
-- Emscripten
-- Nim (testing on devel branch of Github)
-  - nimble
-  - nake
+- Flori compiler
 
 ```sh
-$ nimble install nake
-$ nake install-depends
-$ nake download-depends
-$ nake build
+$ sh build.sh
 ```
