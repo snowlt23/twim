@@ -1,13 +1,4 @@
 
-nimcache/
-nimsuggest.log
-
-nakefile.exe
-nakefile
-
-/src/twim_options_html.exe
-/src/twim_options_html
-
 /dist/*
 !dist/empty.txt
 
@@ -19,4 +10,6 @@ nakefile
 /images/marquee.kra~
 /images/marquee.png~
 
+floricache/
+/twim.js
 /Twim.zip

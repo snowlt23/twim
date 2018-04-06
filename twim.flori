@@ -1,0 +1,80 @@
+
+import "core"
+import "jscore"
+import "chrome_ext"
+
+isenable := false
+
+fn add_overlay_filter(elem Element) {
+  set(elem.style, "backgroundColor", "blue")
+  child := get(child_nodes(elem), 1)
+  set(child.style, "opacity", "0.6")
+  set(child.style, "display", "block")
+}
+fn remove_overlay_filter(elem Element) {
+  set(elem.style, "backgroundColor", "none")
+  child := get(child_nodes(elem), 1)
+  set(child.style, "opacity", "1.0")
+}
+
+fn get_account_name(elem Element) CString {
+  cls := classname(parent_node(elem))
+  contentelem := if (cls == "AdaptiveMedia-threeQuartersWidthPhoto" || cls == "AdaptiveMedia-twoThirdsWidthPhoto" || cls == "AdaptiveMedia-halfWidthPhoto") {
+    parent_node(parent_node(parent_node(parent_node(parent_node(parent_node(elem))))))
+  } elif (cls == "AdaptiveMedia-thirdHeightPhoto" || cls == "AdaptiveMedia-halfHeightPhoto") {
+    parent_node(parent_node(parent_node(parent_node(parent_node(parent_node(parent_node(elem)))))))
+  } else {
+    parent_node(parent_node(parent_node(parent_node(parent_node(elem)))))
+  }
+  inner_text(get(child_nodes(get(child_nodes(get(child_nodes(get(child_nodes(contentelem), 1)), 1)), 4)), 1))
+}
+
+fn get_filename(path CString) CString {
+  spl := split(path, "/")
+  get(spl, length(spl)-1)
+}
+
+fn download_image(elem Element) {
+  imgsrc := get(child_nodes(elem), 1).src
+  filename := string(get_account_name(elem)) & s"_" & string(get_filename(imgsrc))
+  chrome_runtime_send_message(jsobj {
+      "type": "twim_download"
+      "url": imgsrc
+      "filename": filename
+    })
+}
+
+fn img_mouseover(e Event) {
+  if (isenable) {
+    add_overlay_filter(e.currentTarget)
+  }
+}
+fn img_mouseout(e Event) {
+  remove_overlay_filter(e.currentTarget)
+}
+fn img_click(e Event) {
+  if (isenable) {
+    download_image(e.currentTarget)
+    stop_propagation(e)
+  }
+}
+
+fn register_twim_event() {
+  imgelems := get_elements_by_classname("js-adaptive-photo")
+  for imgelem in imgelems {
+    add_event_listener(imgelem, "mouseover", img_mouseover)
+    add_event_listener(imgelem, "mouseout", img_mouseout)
+    add_event_listener(imgelem, "click", img_click)
+  }
+}
+
+fn process_request(req JSObj, sender JSObj, resp JSObj) {
+  if (cstring(req) == "enable_twim") {
+    isenable = true
+    register_twim_event()
+  } elif (cstring(req) == "disable_twim") {
+    isenable = false
+  }
+}
+
+chrome_extension_message_listener(process_request)

@@ -1,0 +1,31 @@
+
+import "core"
+import "jscore"
+import "chrome_ext"
+
+isenable := false
+
+fn action_callback(tab ChromeTab) {
+  if (isenable) {
+    chrome_tab_send_message(tab.id, cast[JSObj]("disable_twim"))
+    chrome_browseraction_seticon(jsobj {"path": "icon-disable.png"})
+  } else {
+    chrome_tab_send_message(tab.id, cast[JSObj]("enable_twim"))
+    chrome_browseraction_seticon(jsobj {"path": "icon-enable.png"})
+  }
+  isenable = not(isenable)
+}
+
+fn process_request(req JSObj, sender JSObj, resp JSObj) {
+  if (get[CString](req, "type") == "twim_download") {
+    url := get[CString](req, "url")
+    filename := get[CString](req, "filename")
+    chrome_download(jsobj {
+        "url": url
+        "filename": filename
+      })
+  }
+}
+
+chrome_browseraction_click_listener(action_callback)
+chrome_runtime_message_listener(process_request)
